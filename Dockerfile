@@ -22,11 +22,14 @@ COPY agents/ agents/
 
 # Streamlit config: disable telemetry, set server options
 RUN mkdir -p /root/.streamlit
-RUN printf '[server]\nheadless = true\nport = 8501\naddress = "0.0.0.0"\nenableCORS = false\n\n[browser]\ngatherUsageStats = false\n' > /root/.streamlit/config.toml
+RUN printf '[server]\nheadless = true\naddress = "0.0.0.0"\nenableCORS = false\nenableXsrfProtection = false\n\n[browser]\ngatherUsageStats = false\n' > /root/.streamlit/config.toml
 
-EXPOSE 8501
+# Cloud Run injects PORT env var (default 8080)
+ENV PORT=8080
+EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD curl -f http://localhost:8501/_stcore/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD curl -f http://localhost:${PORT}/_stcore/health || exit 1
 
-ENTRYPOINT ["streamlit", "run", "app.py"]
+# Use shell form so $PORT is expanded at runtime
+CMD streamlit run app.py --server.port=${PORT}
