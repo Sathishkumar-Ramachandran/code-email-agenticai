@@ -16,11 +16,11 @@ class Settings(BaseSettings):
     # ── LLM ─────────────────────────────────────────────────────────────────
     google_api_key: str = Field(..., description="Google AI Studio API key")
     gemini_pro_model: str = Field(
-        default="gemini-2.5-pro-preview",
+        default="gemini-3.1-pro-preview",
         description="Gemini Pro model for deep company analysis",
     )
     gemini_flash_model: str = Field(
-        default="gemini-2.0-flash",
+        default="gemini-3-flash-preview",
         description="Gemini Flash model for fast drafting and review",
     )
 
